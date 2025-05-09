@@ -1,0 +1,32 @@
+@startuml
+!include <C4/C4_Container>
+
+Person(admin, "Администратор", "Управляет подписками и уведомлениями")
+Person(user, "Пользователь", "")
+
+System_Boundary(wormHouse, "Тёплый дом") {
+Container(web_app, "Веб-приложение", "JavaScript/React", "Интерфейс для пользователей")
+Container(gateway, "API Gateway", "Nginx", "Маршрутизация и авторизация запросов")
+Container(backend, "Серверная часть", "Java", "Бизнес логика приложения")
+
+ContainerDb(database, "База данных", "PostgreSQL", "Хранение пользователей, датчиков, уведомлений")
+ContainerDb(s3, "Хранилище", "S3", "Хранение видеозаписей")
+}
+
+System_Ext(email, "Email-сервис", "Отправка уведомлений")
+System_Ext(payment, "Платежный шлюз", "Обработка платежей.")
+System_Ext(partner, "Парнерские системы", "Датчики и системы умного дома")
+
+Rel(web_app, gateway, "HTTP/REST API")
+
+Rel(gateway, backend, "HTTP/REST API")
+Rel(backend, database, "JDBC")
+Rel(backend, s3, "HTTP")
+
+Rel(admin, web_app, "Управляет", "HTTP")
+Rel(user, web_app, "Использует", "HTTP")
+
+Rel(backend, email, "Направляет уведомление", "SMTP")
+Rel(backend, payment, "Направляет на выполнение платежа", "HTTP")
+Rel(partner, gateway, "Управляют датчиками через кабинет партнера", "HTTP")
+@enduml

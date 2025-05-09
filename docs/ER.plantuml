@@ -1,0 +1,237 @@
+@startuml
+' Стили для ER-диаграмм
+skinparam entity {
+  BackgroundColor White
+  BorderColor Black
+}
+
+' Сущности
+entity "Users" {
+  + user_id : UUID (PK)
+  --
+  + email : VARCHAR(255)
+  + password_hash : VARCHAR(255)
+  + registration_date : TIMESTAMP
+  + created_at : TIMESTAMP
+  + updated_at : TIMESTAMP
+}
+
+entity "Roles" {
+  + role_id : UUID (PK)
+  --
+  + role_name : VARCHAR(255)
+  + description : TEXT
+  + created_at : TIMESTAMP
+  + updated_at : TIMESTAMP
+}
+
+entity "User_Roles" {
+  + user_id : UUID (FK1)
+  + role_id : UUID (FK2)
+  --
+  + created_at : TIMESTAMP
+  + PRIMARY KEY (user_id, role_id)
+}
+
+entity "Subscriptions" {
+  + subscription_id : UUID (PK)
+  --
+  + user_id : UUID (FK)
+  + plan_id : UUID (FK)
+  + start_date : TIMESTAMP
+  + end_date : TIMESTAMP
+  + status : VARCHAR(50)
+  + created_at : TIMESTAMP
+  + updated_at : TIMESTAMP
+}
+
+entity "Payment_Methods" {
+  + payment_method_id : UUID (PK)
+  --
+  + card_number : VARCHAR(255)
+  + expiry_date : DATE
+  + provider : VARCHAR(255)
+  + created_at : TIMESTAMP
+  + updated_at : TIMESTAMP
+}
+
+entity "Payments" {
+  + payment_id : UUID (PK)
+  --
+  + subscription_id : UUID (FK)
+  + payment_method_id : UUID (FK)
+  + user_id : UUID (FK)
+  + payment_date : TIMESTAMP
+  + amount : DECIMAL
+  + status : VARCHAR(50)
+  + created_at : TIMESTAMP
+  + updated_at : TIMESTAMP
+}
+
+entity "Support_Tickets" {
+  + ticket_id : UUID (PK)
+  --
+  + user_id : UUID (FK)
+  + assigned_admin_id : UUID (FK)
+  + creation_date : TIMESTAMP
+  + subject : VARCHAR(255)
+  + description : TEXT
+  + status : VARCHAR(50)
+  + created_at : TIMESTAMP
+  + updated_at : TIMESTAMP
+}
+
+entity "Device_Types" {
+  + device_type_id : UUID (PK)
+  --
+  + type_name : VARCHAR(255)
+  + description : TEXT
+  + created_at : TIMESTAMP
+  + updated_at : TIMESTAMP
+}
+
+entity "Plan_Device_Types" {
+    + plan_id : UUID (FK1)
+    + device_type_id : UUID (FK2)
+    --
+    + created_at : TIMESTAMP
+    + PRIMARY KEY (plan_id, device_type_id)
+}
+
+entity "Devices" {
+  + device_id : UUID (PK)
+  --
+  + user_id : UUID (FK)
+  + device_type_id : UUID (FK)
+  + device_name : VARCHAR(255)
+  + serial_number : VARCHAR(255)
+  + created_at : TIMESTAMP
+  + updated_at : TIMESTAMP
+}
+
+entity "Device_Parameters" {
+  + parameter_id : UUID (PK)
+  --
+  + device_type_id : UUID (FK)
+  + parameter_name : VARCHAR(255)
+  + parameter_unit : VARCHAR(255)
+  + created_at : TIMESTAMP
+  + updated_at : TIMESTAMP
+}
+
+entity "Device_Data" {
+  + data_id : UUID (PK)
+  --
+  + device_id : UUID (FK)
+  + timestamp : TIMESTAMP
+  + created_at : TIMESTAMP
+  + updated_at : TIMESTAMP
+}
+
+entity "Device_Data_Values" {
+  + data_value_id : UUID (PK)
+  --
+  + data_id : UUID (FK)
+  + parameter_id : UUID (FK)
+  + parameter_value : DECIMAL
+  + created_at : TIMESTAMP
+  + updated_at : TIMESTAMP
+}
+
+entity "Automation_Scenarios" {
+  + scenario_id : UUID (PK)
+  --
+  + user_id : UUID (FK)
+  + scenario_name : VARCHAR(255)
+  + description : TEXT
+  + creation_date : TIMESTAMP
+  + created_at : TIMESTAMP
+  + updated_at : TIMESTAMP
+}
+
+entity "Automation_Scenario_Devices" {
+  + scenario_id : UUID (PK) (FK)
+  + device_id : UUID (PK) (FK)
+  --
+  + created_at : TIMESTAMP
+  + updated_at : TIMESTAMP
+}
+
+entity "Partner_Integrations" {
+  + integration_id : UUID (PK)
+  --
+  + partner_id : UUID (FK)
+  + device_id : UUID (FK)
+  + integration_date : TIMESTAMP
+  + status : VARCHAR(50)
+  + created_at : TIMESTAMP
+  + updated_at : TIMESTAMP
+}
+
+entity "Notification_Templates" {
+    + template_id : UUID (PK)
+    --
+    + template_name : VARCHAR(255)
+    + template_type : VARCHAR(255)
+    + message_subject : VARCHAR(255)
+    + message_body : TEXT
+    + created_at : TIMESTAMP
+    + updated_at : TIMESTAMP
+}
+
+entity "Notifications" {
+  + notification_id : UUID (PK)
+  --
+  + user_id : UUID (FK)
+  + template_id : UUID (FK)
+  + notification_type : VARCHAR(255)
+  + timestamp : TIMESTAMP
+  + message : TEXT
+  + created_at : TIMESTAMP
+  + updated_at : TIMESTAMP
+}
+
+entity "Partner" {
+    + partner_id : UUID (PK)
+    --
+    + partner_name : VARCHAR(255)
+    + created_at : TIMESTAMP
+    + updated_at : TIMESTAMP
+}
+
+entity "Plan" {
+    + plan_id : UUID (PK)
+    --
+    + plan_name : VARCHAR(255)
+    + price : DECIMAL
+    + description : TEXT
+    + created_at : TIMESTAMP
+    + updated_at : TIMESTAMP
+}
+
+' Связи
+Subscriptions ||--o{ Payments : "1" * "M"
+Users ||--o{ Notifications : "1" * "M"
+Roles ||--o{ User_Roles : "1" * "M"
+Users ||--o{ User_Roles : "1" * "M"
+Device_Types ||--o{ Devices : "1" * "M"
+Devices ||--o{ Device_Data : "1" * "M"
+Device_Data ||--o{ Device_Data_Values : "1" * "M"
+Devices ||--o{ Partner_Integrations : "1" * "M"
+Notification_Templates ||--o{ Notifications : "1" * "M"
+Device_Types ||--o{ Plan_Device_Types : "1" * "M"
+Partner_Integrations }|--|| Partner : "M" * "1"
+Subscriptions }|--|| Plan : "M" * "1"
+Payments }|--|| Payment_Methods : "M" * "1"
+Subscriptions }|--|| Users : "M" * "1"
+Users }|--|| Roles : "M" * "N"
+Devices }|--|| Users : "M" * "1"
+Device_Parameters }|--|| Device_Types : "M" * "1"
+Device_Data_Values }|--|| Device_Parameters : "M" * "1"
+Automation_Scenarios }|--|| Users : "M" * "1"
+Automation_Scenario_Devices }|--|| Automation_Scenarios : "M" * "1"
+Automation_Scenario_Devices }|--|| Devices : "M" * "1"
+Plan }|--|| Plan_Device_Types : "1" * "M"
+Support_Tickets }|--|| Users : "M" * "1"
+
+@enduml

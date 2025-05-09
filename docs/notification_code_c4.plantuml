@@ -1,0 +1,64 @@
+@startuml
+
+package "Commands" {
+  class SendNotification {
+    +execute()
+  }
+  class CreateNotificationTemplate {
+    +execute()
+  }
+  class UpdateNotificationTemplate {
+    +execute()
+  }
+  class DeleteNotificationTemplate {
+    +execute()
+  }
+}
+
+package "Queries" {
+  class GetNotificationTemplate {
+    +execute()
+  }
+  class GetAllNotificationTemplates {
+    +execute()
+  }
+  class GetNotificationHistory {
+    +execute()
+  }
+}
+
+class NotificationService {
+  +handleCommand()
+  +handleQuery()
+}
+
+NotificationService --> SendNotification : handles
+NotificationService --> CreateNotificationTemplate : handles
+NotificationService --> UpdateNotificationTemplate : handles
+NotificationService --> DeleteNotificationTemplate : handles
+
+NotificationService --> GetNotificationTemplate : handles
+NotificationService --> GetAllNotificationTemplates : handles
+NotificationService --> GetNotificationHistory : handles
+
+package "NotificationProviders" {
+  interface NotificationProvider {
+    +send(message: String, recipient: String)
+  }
+
+  class EmailProvider implements NotificationProvider {
+    +send(message: String, recipient: String)
+  }
+
+  class SMSProvider implements NotificationProvider {
+    +send(message: String, recipient: String)
+  }
+
+  class PushNotificationProvider implements NotificationProvider {
+    +send(message: String, recipient: String)
+  }
+}
+
+NotificationService ..> NotificationProviders.NotificationProvider : uses
+
+@enduml

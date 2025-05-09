@@ -1,0 +1,93 @@
+@startuml
+
+package "Commands" {
+  class RegisterUser {
+    +execute()
+  }
+  class AuthenticateUser {
+    +execute()
+  }
+  class LogoutUser {
+    +execute()
+  }
+  class ChangePassword {
+    +execute()
+  }
+}
+
+package "Queries" {
+  class GetUserDetails {
+    +execute()
+  }
+  class IsUserAuthenticated {
+    +execute()
+  }
+}
+
+class UserManagement {
+  +handleCommand()
+  +handleQuery()
+}
+
+UserManagement --> RegisterUser : handles
+UserManagement --> AuthenticateUser : handles
+UserManagement --> LogoutUser : handles
+UserManagement --> ChangePassword : handles
+
+UserManagement --> GetUserDetails : handles
+UserManagement --> IsUserAuthenticated : handles
+
+package "Commands_Roles" {
+  class AddRole {
+    +execute()
+  }
+  class RemoveRole {
+    +execute()
+  }
+  class AddPermissionToRole {
+    +execute()
+  }
+  class RemovePermissionFromRole {
+    +execute()
+  }
+}
+
+package "Queries_Roles" {
+  class GetRoleDetails {
+    +execute()
+  }
+  class GetPermissionsForRole {
+    +execute()
+  }
+}
+
+class RoleManagement {
+  +handleCommand()
+  +handleQuery()
+}
+
+RoleManagement --> AddRole : handles
+RoleManagement --> RemoveRole : handles
+RoleManagement --> AddPermissionToRole : handles
+RoleManagement --> RemovePermissionFromRole : handles
+
+RoleManagement --> GetRoleDetails : handles
+RoleManagement --> GetPermissionsForRole : handles
+
+package "Commands_Session" {
+  class CreateSession {
+    +execute()
+  }
+  class DestroySession {
+    +execute()
+  }
+}
+
+class SessionManagement {
+  +handleCommand()
+}
+
+SessionManagement --> CreateSession : handles
+SessionManagement --> DestroySession : handles
+
+@enduml
