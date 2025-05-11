@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+
+Container(backend, "Пользователи", "Java") {
+Component(user_management, "Контроллер для управление пользователями", "Java", "Создание, редактирование и удаление учетных записей пользователей")
+Component(role_management, "Контроллер для управление ролями пользователей", "Java", "Управление ролями пользователей")
+Component(auth, "Контроллер для авторизации/аутентификации", "Java", "Аутентификация и авторизация пользователей")
+Component(register, "Контроллер для регистрации", "Java", "Регистрация пользователей")
+}
+
+ContainerDb(auth_database, "База данных", "PostgreSQL", "Профили и роли")
+ContainerDb(broker, "Брокер сообщений", "Apache Kafka", "Шина для внутрисистемного общения")
+
+
+Rel(user_management, auth_database, "JDBC")
+Rel(role_management, auth_database, "JDBC")
+Rel(auth, auth_database, "JDBC")
+Rel(register, auth_database, "JDBC")
+Rel(register, broker, "TCP", "Event о регистрации пользователя")
+@enduml

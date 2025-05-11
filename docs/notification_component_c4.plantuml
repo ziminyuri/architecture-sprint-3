@@ -1,0 +1,21 @@
+@startuml
+!include <C4/C4_Component>
+
+Container(backend, "Уведомления", "Java") {
+Component(template_management, "Контроллер для управление шаблонами", "Java", "Управление шаблонами рассылки")
+Component(events, "Контроллер для управления рассылками", "Java", "Управление рассылками")
+Component(event_worker, "Worker для чтения сообщений из брокера", "Java", "Читает сообщения из брокера и отправляет по каналу нотификации")
+
+}
+
+System_Ext(email, "Email-сервис", "Отправка уведомлений")
+ContainerDb(database, "База данных", "PostgreSQL", "Профили и роли")
+ContainerDb(broker, "Брокер сообщений", "Apache Kafka", "Шина для внутрисистемного общения")
+
+
+Rel(template_management, database, "JDBC")
+Rel(events, database, "JDBC")
+Rel(event_worker, database, "JDBC")
+Rel(event_worker, broker, "TCP")
+Rel(event_worker, email, "SMTP", "Сообщение")
+@enduml

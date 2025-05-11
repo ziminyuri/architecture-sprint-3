@@ -135,9 +135,14 @@ TO BE:
 
 **Диаграмма компонентов (Components)**
 
-![Диаграмма контейнеров С4 ](docs/components.png)
+- Пользователи
+![Диаграмма контейнеров С4 ](docs/auth_component_C4.png)
 
-Исходный файл диаграммы расположен в `docs/components.plantuml`.
+Исходный файл диаграммы расположен в `docs/auth_component_C4.plantuml`.
+- Уведомления
+![Диаграмма контейнеров С4 ](docs/notification_component_c4.png)
+
+Исходный файл диаграммы расположен в `docs/notification_component_c4.plantuml`.
 
 **Диаграмма кода (Code)**
 
