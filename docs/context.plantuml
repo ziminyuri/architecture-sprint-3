@@ -1,0 +1,21 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+LAYOUT_WITH_LEGEND()
+
+
+Person(admin, "Администратор", "Управляет подписками и уведомлениями")
+Person(user, "Пользователь", "")
+
+System_Ext(email, "Email-сервис", "Отправка уведомлений")
+System_Ext(payment, "Платежный шлюз", "Обработка платежей.")
+System_Ext(partner, "Парнерские системы", "Датчики и системы умного дома")
+
+System(wormHouse, "Тёплый дом", "SaaS платформа по управлению умным домом")
+
+Rel(admin, wormHouse, "Управляет", "")
+Rel(user, wormHouse, "Использует", "")
+
+Rel(wormHouse, email, "Направляет уведомление")
+Rel(wormHouse, payment, "Направляет на выполнение платежа")
+Rel(partner, wormHouse, "Управляют датчиками через кабинет партнера")
+@enduml

@@ -1,0 +1,69 @@
+@startuml
+
+package "Commands" {
+  class CreatePayment {
+    +execute()
+  }
+  class CapturePayment {
+    +execute()
+  }
+  class RefundPayment {
+    +execute()
+  }
+  class VoidPayment {
+    +execute()
+  }
+}
+
+package "Queries" {
+  class GetPaymentDetails {
+    +execute()
+  }
+  class GetPaymentHistory {
+    +execute()
+  }
+}
+
+class PaymentService {
+  +handleCommand()
+  +handleQuery()
+}
+
+PaymentService --> CreatePayment : handles
+PaymentService --> CapturePayment : handles
+PaymentService --> RefundPayment : handles
+PaymentService --> VoidPayment : handles
+
+PaymentService --> GetPaymentDetails : handles
+PaymentService --> GetPaymentHistory : handles
+
+package "PaymentGateways" {
+  interface PaymentGateway {
+    +processPayment(amount: Double, currency: String, token: String) : String
+    +refundPayment(transactionId: String, amount: Double) : Boolean
+    +getPaymentStatus(transactionId: String) : PaymentStatus
+  }
+
+  enum PaymentStatus {
+    SUCCESS,
+    PENDING,
+    FAILED,
+    REFUNDED
+  }
+
+  class SberGateway implements PaymentGateway {
+    +processPayment(amount: Double, currency: String, token: String) : String
+    +refundPayment(transactionId: String, amount: Double) : Boolean
+    +getPaymentStatus(transactionId: String) : PaymentStatus
+  }
+
+  class YamoneyGateway implements PaymentGateway {
+    +processPayment(amount: Double, currency: String, token: String) : String
+    +refundPayment(transactionId: String, amount: Double) : Boolean
+    +getPaymentStatus(transactionId: String) : PaymentStatus
+  }
+}
+
+PaymentService ..> PaymentGateways.PaymentGateway : uses
+
+@enduml
